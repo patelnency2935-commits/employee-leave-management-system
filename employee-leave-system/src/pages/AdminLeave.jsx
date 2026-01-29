@@ -1,14 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
+import "./AdminLeave.css";
 
 export default function AdminLeave() {
-  const [leaves, setLeaves] = useState(
-    JSON.parse(localStorage.getItem("leaves")) || []
-  );
+  const [leaves, setLeaves] = useState([]);
 
-  const updateStatus = (id, status) => {
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem("leaves")) || [];
+    setLeaves(data);
+  }, []);
+
+  const updateStatus = (id, newStatus) => {
     const updatedLeaves = leaves.map((leave) =>
-      leave.id === id ? { ...leave, status } : leave
+      leave.id === id ? { ...leave, status: newStatus } : leave
     );
 
     setLeaves(updatedLeaves);
@@ -18,34 +22,46 @@ export default function AdminLeave() {
   return (
     <>
       <Navbar />
-      <div style={{ padding: "40px" }}>
-        <h2>Admin Leave Approvals</h2>
+
+      <div className="admin-container">
+        <h2>Admin – Leave Requests</h2>
 
         {leaves.length === 0 ? (
-          <p>No leave requests</p>
+          <p>No leave requests found</p>
         ) : (
           leaves.map((leave) => (
-            <div
-              key={leave.id}
-              style={{
-                border: "1px solid gray",
-                padding: "10px",
-                marginBottom: "10px",
-              }}
-            >
-              <p><b>Reason:</b> {leave.reason}</p>
-              <p><b>Status:</b> {leave.status}</p>
+            <div className="leave-card" key={leave.id}>
+              <div className="leave-info">
+                <p><strong>Employee:</strong> {leave.employee}</p>
+                <p><strong>From:</strong> {leave.from}</p>
+                <p><strong>To:</strong> {leave.to}</p>
+                <p><strong>Type:</strong> {leave.type}</p>
+                <p><strong>Reason:</strong> {leave.reason}</p>
+              </div>
 
-              <button onClick={() => updateStatus(leave.id, "Approved")}>
-                Approve
-              </button>
+              <div className="leave-actions">
+                <span className={`status ${leave.status.toLowerCase()}`}>
+                  {leave.status}
+                </span>
 
-              <button
-                onClick={() => updateStatus(leave.id, "Rejected")}
-                style={{ marginLeft: "10px" }}
-              >
-                Reject
-              </button>
+                {leave.status === "Pending" && (
+                  <>
+                    <button
+                      className="approve"
+                      onClick={() => updateStatus(leave.id, "Approved")}
+                    >
+                      Approve
+                    </button>
+
+                    <button
+                      className="reject"
+                      onClick={() => updateStatus(leave.id, "Rejected")}
+                    >
+                      Reject
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           ))
         )}

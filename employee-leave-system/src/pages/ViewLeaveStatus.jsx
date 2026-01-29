@@ -1,7 +1,14 @@
+import { useEffect, useState } from "react";
 import Navbar from "../Components/Navbar";
+import "../App.css";
 
 export default function ViewLeaveStatus() {
-  const leaves = JSON.parse(localStorage.getItem("leaves")) || [];
+  const [leaves, setLeaves] = useState([]);
+
+  useEffect(() => {
+    const storedLeaves = JSON.parse(localStorage.getItem("leaves")) || [];
+    setLeaves(storedLeaves);
+  }, []);
 
   return (
     <>
@@ -10,19 +17,26 @@ export default function ViewLeaveStatus() {
         <h2>My Leave Status</h2>
 
         {leaves.length === 0 ? (
-          <p>No leaves applied</p>
+          <p>No leave requests found</p>
         ) : (
           leaves.map((leave) => (
-            <div
-              key={leave.id}
-              style={{
-                border: "1px solid gray",
-                padding: "10px",
-                marginBottom: "10px",
-              }}
-            >
+            <div className="leave-card" key={leave.id}>
+              <p><b>Leave Type:</b> {leave.leaveType}</p>
+              <p><b>From:</b> {leave.fromDate}</p>
+              <p><b>To:</b> {leave.toDate}</p>
               <p><b>Reason:</b> {leave.reason}</p>
-              <p><b>Status:</b> {leave.status}</p>
+
+              <span
+                className={`badge ${
+                  leave.status === "Pending"
+                    ? "pending"
+                    : leave.status === "Approved"
+                    ? "approved"
+                    : "rejected"
+                }`}
+              >
+                {leave.status}
+              </span>
             </div>
           ))
         )}

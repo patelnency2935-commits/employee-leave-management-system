@@ -1,18 +1,23 @@
+import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import EmployeeLogin from "./pages/EmployeeLogin";
+// pages
 import AdminLogin from "./pages/AdminLogin";
+import EmployeeLogin from "./pages/EmployeeLogin";
 import Dashboard from "./pages/Dashboard";
 import ApplyLeave from "./pages/ApplyLeave";
 import ViewLeaveStatus from "./pages/ViewLeaveStatus";
 import AdminLeave from "./pages/AdminLeave";
+
+// protected route
 import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
+
+        {/* Login Routes */}
         <Route path="/" element={<EmployeeLogin />} />
         <Route path="/admin" element={<AdminLogin />} />
 
@@ -53,6 +58,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
       </Routes>
     </Router>
   );
